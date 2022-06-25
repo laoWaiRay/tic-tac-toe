@@ -1,0 +1,30 @@
+.grid{
+    display: grid;
+    grid-template-columns: repeat(3,4rem);
+    grid-template-rows: repeat(3,4rem);
+    gap: 3rem;
+    position: relative;
+    width: fit-content;
+    padding: 3rem;
+    background-color: transparent;
+    z-index: 1;
+}
+
+.grid-overlay{
+    position: absolute;
+    top: -2.5rem;
+    left: -2rem;
+    display: grid;
+    grid-template-columns: repeat(3,7rem);
+    grid-template-rows: repeat(3,7rem);
+    gap: 0;
+    padding: 3rem;
+    z-index: -1;
+}
+
+.grid-overlay-space{
+    display: block;
+    height: 100%;
+    width: 100%;
+    border: 1px solid red;
+}

@@ -1,0 +1,25 @@
+{
+  "name": "tic-tac-toe",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "watch:sass": "sass --watch scss/main.scss css/styles.css",
+    "devserver":  "live-server",
+    "start":  "npm-run-all --parallel devserver watch:sass"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/laoWaiRay/tic-tac-toe.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/laoWaiRay/tic-tac-toe/issues"
+  },
+  "homepage": "https://github.com/laoWaiRay/tic-tac-toe#readme",
+  "dependencies": {
+    "npm-run-all": "^4.1.5"
+  }
+}
