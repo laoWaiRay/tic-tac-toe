@@ -281,22 +281,24 @@ gridSpaces.forEach(gridSpace => {
                 body.append(div);
             }
 
-            computer.makeMove(parseInt(gridSpaceIndexNumber));              // computer makes move
-            
-            winner = gameController.checkWinner(computer.getLastPlayedComputerPosition());
-            if (winner) {
-                const div = document.createElement('div');
-                div.classList.add('msg-win')
-                div.classList.add('delete-me')
-                div.append(`${winner} Wins!`);
-                body.append(div);
-                return;
-            } else if (isGameOver === true) {
-                const div = document.createElement('div');
-                div.classList.add('msg-tie')
-                div.classList.add('delete-me')
-                div.append('It\'s a tie!');
-                body.append(div);
+            if(!isGameOver){
+                computer.makeMove(parseInt(gridSpaceIndexNumber));              // computer makes move
+                
+                winner = gameController.checkWinner(computer.getLastPlayedComputerPosition());
+                if (winner) {
+                    const div = document.createElement('div');
+                    div.classList.add('msg-win')
+                    div.classList.add('delete-me')
+                    div.append(`${winner} Wins!`);
+                    body.append(div);
+                    return;
+                } else if (isGameOver === true) {
+                    const div = document.createElement('div');
+                    div.classList.add('msg-tie')
+                    div.classList.add('delete-me')
+                    div.append('It\'s a tie!');
+                    body.append(div);
+                }
             }
         }
     }
@@ -304,10 +306,9 @@ gridSpaces.forEach(gridSpace => {
 
 resetBtn.onclick = (e) => {
     gameBoard.createNewGameboard();
-    if(document.contains(document.querySelector('.delete-me'))){
+    // if(document.contains(document.querySelector('.delete-me'))){
         document.querySelector('.delete-me').remove();
-    }
-    
+    // }  
 }
 
 
