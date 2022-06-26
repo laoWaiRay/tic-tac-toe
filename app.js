@@ -1,39 +1,51 @@
 /////////////////////////////// Globals /// //////////////////////////////////////////////////////////
-
+const body = document.querySelector('body');
 const gridSpaces = document.querySelectorAll('.grid__space');
 const gridSpacesArray = Array.from(gridSpaces);
 const [gridSpace0, gridSpace1, gridSpace2,
        gridSpace3, gridSpace4, gridSpace5,
        gridSpace6,gridSpace7,gridSpace8] = gridSpacesArray;
 
+let isGameOver = false;
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////// Gameboard Module //////////////////////////////////////////////////////
 
 // Player 1 => 'X', Player 2 => 'O'
+
 const gameBoard = (function(){                          // MODULE
-    let marker = '';
-    let gameBoard = [null, null, null, null, null, null, null, null, null];
+    let marker = 0;
+    let gameBoard = [0, 0, 0, 0, 0, 0, 0, 0, 0];
 
     const createNewGameboard = function() {
-        gameBoard = [null, null, null, null, null, null, null, null, null];
+        isGameOver = false;
+        gameBoard = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+        for(let i=0; i<gameBoard.length; i++){
+            gridSpacesArray[i].innerText = gameBoard[i];
+        }
         gameController.initTurns(player1, player2);
         marker = gameController.setMarker(player1,player2);
     }
 
-    const showGameboard = function() {
-
+    const getGameboard = function() {
+        return gameBoard;
     }
 
-    const updateGameboard = function(space) {            // space is an element with data index value from 0 to 8
-        space.innerText = marker;
+    const updateGameboard = function(gridSpaceIndexNumber) {            // space is an element with data index value from 0 to 8
+        gameBoard[gridSpaceIndexNumber] = marker;
+
+        for(let i=0; i<gameBoard.length; i++){
+            gridSpacesArray[i].innerText = gameBoard[i];
+        }
+
         gameController.changeTurns(player1,player2);
         marker = gameController.setMarker(player1,player2);
     }
 
     return{
         createNewGameboard,
-        showGameboard,
+        getGameboard,
         updateGameboard
     }
 })();
@@ -64,9 +76,9 @@ const gameController = function(player1, player2){
 
     const setMarker = (player1, player2) => {
         if(player1.isTurn){
-            return '◯';
+            return 1;
         } else {
-            return '✖';
+            return -1;
         }
     };
 
@@ -75,7 +87,49 @@ const gameController = function(player1, player2){
         player2.isTurn = !player2.isTurn;
     };
 
-    return {initTurns, setMarker, changeTurns};
+
+    const checkWinner = function(lastPlayedPosition){
+        const rows = [[0,1,2],[3,4,5],[6,7,8]];
+        const cols = [[0,3,6],[1,4,7],[2,5,8]];
+        const diagonals = [[0,4,8], [2,4,6]];
+        let winner = "";
+
+        const checkedLines = [];
+
+        if(rows[0].includes(lastPlayedPosition)) checkedLines.push(rows[0])
+        if(rows[1].includes(lastPlayedPosition)) checkedLines.push(rows[1])
+        if(rows[2].includes(lastPlayedPosition)) checkedLines.push(rows[2])
+
+        if(cols[0].includes(lastPlayedPosition)) checkedLines.push(cols[0])
+        if(cols[1].includes(lastPlayedPosition)) checkedLines.push(cols[1])
+        if(cols[2].includes(lastPlayedPosition)) checkedLines.push(cols[2])
+
+        if(diagonals[0].includes(lastPlayedPosition)) checkedLines.push(diagonals[0])
+        if(diagonals[1].includes(lastPlayedPosition)) checkedLines.push(diagonals[1])
+
+        for (const line of checkedLines){
+            let total = 0;
+            for(const index of line){
+                total += gameBoard.getGameboard()[index];
+                if(total === 3) {
+                    winner = "Player 1";
+                    isGameOver = true;
+                }
+                if(total === -3) {
+                    winner = "Player 2";
+                    isGameOver = true;
+                }
+            }
+        }
+
+        if(isGameOver === false && !gameBoard.getGameboard().includes(0)){
+            isGameOver = true;
+        }
+
+        if(isGameOver === true && winner != "") return winner;
+    }
+
+    return {initTurns, setMarker, changeTurns, checkWinner};
 }();
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -85,8 +139,22 @@ const gameController = function(player1, player2){
 
 gridSpaces.forEach(gridSpace => {
     gridSpace.onclick = (e) => {
-        const space = e.target;
-        gameBoard.updateGameboard(space);
+        if(e.target.innerText != '0') return
+        const gridSpaceIndexNumber = e.target.dataset.index;            // This is a string
+        gameBoard.updateGameboard(gridSpaceIndexNumber);
+        const winner = gameController.checkWinner(parseInt(gridSpaceIndexNumber));     // parseInt the string into an integer
+        if (winner) {
+            const div = document.createElement('div');
+            div.classList.add('msg-win')
+            div.append(`The winner is ${winner}!`);
+            body.append(div);
+            return;
+        } else if (isGameOver === true) {
+            const div = document.createElement('div');
+            div.classList.add('msg-tie')
+            div.append('It\'s a tie!');
+            body.append(div);
+        }
     }
 })
 
