@@ -88,6 +88,12 @@ button:hover {
   border-radius: 20px;
   position: relative;
 }
+@media only screen and (max-width: 600px) {
+  .grid-wrapper {
+    grid-template-columns: repeat(3, 110px);
+    grid-template-rows: repeat(3, 110px);
+  }
+}
 .grid-wrapper::after {
   content: "";
   position: absolute;
