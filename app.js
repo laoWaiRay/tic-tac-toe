@@ -1,5 +1,6 @@
 /////////////////////////////// Globals /// //////////////////////////////////////////////////////////
 const body = document.querySelector('body');
+const resetBtn = document.querySelector('.reset');
 const gridSpaces = document.querySelectorAll('.grid__space');
 const gridSpacesArray = Array.from(gridSpaces);
 const [gridSpace0, gridSpace1, gridSpace2,
@@ -22,7 +23,7 @@ const gameBoard = (function(){                          // MODULE
         isGameOver = false;
         gameBoard = [0, 0, 0, 0, 0, 0, 0, 0, 0];
         for(let i=0; i<gameBoard.length; i++){
-            gridSpacesArray[i].innerText = gameBoard[i];
+            gridSpacesArray[i].innerText = "";
         }
         gameController.initTurns(player1, player2);
         marker = gameController.setMarker(player1,player2);
@@ -36,7 +37,8 @@ const gameBoard = (function(){                          // MODULE
         gameBoard[gridSpaceIndexNumber] = marker;
 
         for(let i=0; i<gameBoard.length; i++){
-            gridSpacesArray[i].innerText = gameBoard[i];
+            if(gameBoard[i] === 1) gridSpacesArray[i].innerText = 'X';
+            if(gameBoard[i] === -1) gridSpacesArray[i].innerText = 'O';
         }
 
         gameController.changeTurns(player1,player2);
@@ -139,23 +141,39 @@ const gameController = function(player1, player2){
 
 gridSpaces.forEach(gridSpace => {
     gridSpace.onclick = (e) => {
-        if(e.target.innerText != '0') return
-        const gridSpaceIndexNumber = e.target.dataset.index;            // This is a string
-        gameBoard.updateGameboard(gridSpaceIndexNumber);
-        const winner = gameController.checkWinner(parseInt(gridSpaceIndexNumber));     // parseInt the string into an integer
-        if (winner) {
-            const div = document.createElement('div');
-            div.classList.add('msg-win')
-            div.append(`The winner is ${winner}!`);
-            body.append(div);
-            return;
-        } else if (isGameOver === true) {
-            const div = document.createElement('div');
-            div.classList.add('msg-tie')
-            div.append('It\'s a tie!');
-            body.append(div);
+        while(!isGameOver){
+            if(e.target.innerText != '') return
+            const gridSpaceIndexNumber = e.target.dataset.index;            // This is a string
+            gameBoard.updateGameboard(gridSpaceIndexNumber);
+            const winner = gameController.checkWinner(parseInt(gridSpaceIndexNumber));     // parseInt the string into an integer
+            if (winner) {
+                const div = document.createElement('div');
+                div.classList.add('msg-win')
+                div.classList.add('delete-me')
+                div.append(`${winner} Wins!`);
+                body.append(div);
+                return;
+            } else if (isGameOver === true) {
+                const div = document.createElement('div');
+                div.classList.add('msg-tie')
+                div.classList.add('delete-me')
+                div.append('It\'s a tie!');
+                body.append(div);
+            }
         }
     }
 })
+
+resetBtn.onclick = (e) => {
+    gameBoard.createNewGameboard();
+    document.querySelector('.delete-me').remove();
+}
+
+
+
+
+
+
+//// Init first gameboard ////
 
 gameBoard.createNewGameboard();

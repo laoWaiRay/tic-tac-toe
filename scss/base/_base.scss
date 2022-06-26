@@ -10,5 +10,9 @@ html{
 
 body{
     box-sizing: border-box;
-    padding: 3rem;
+    min-height: 100vh;
+    padding: 8rem;
+    background-color: #151515;
+    color: white;
+    font-family: 'Fredoka One', sans-serif;
 }
