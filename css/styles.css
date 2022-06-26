@@ -11,10 +11,40 @@ html {
 body {
   box-sizing: border-box;
   min-height: 100vh;
-  padding: 8rem;
   background-color: #151515;
   color: white;
   font-family: "Fredoka One", sans-serif;
+}
+
+.main {
+  padding: 8rem;
+}
+
+.footer {
+  padding: 2rem;
+  text-align: center;
+  border-top: 1px solid rgba(102, 51, 153, 0.563);
+}
+
+.footer-text-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.odin-logo {
+  height: 5rem;
+  width: auto;
+  margin-left: 2rem;
+}
+
+.github-cat {
+  fill: white;
+  margin-left: 2rem;
+  transition: transform 2s;
+}
+.github-cat:hover {
+  transform: rotate(360deg);
 }
 
 body {
@@ -31,7 +61,7 @@ button {
   background-color: rebeccapurple;
   padding: 1.5rem;
   margin: 0 auto;
-  margin-top: 3rem;
+  margin-top: 4rem;
   border: none;
   border-radius: 3px;
   font-size: inherit;
@@ -46,7 +76,7 @@ button:hover {
   display: grid;
   justify-content: center;
   align-content: center;
-  margin: 10rem 0;
+  margin: 4rem 0;
 }
 
 .grid-wrapper {
