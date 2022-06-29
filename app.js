@@ -6,6 +6,11 @@ const gridSpacesArray = Array.from(gridSpaces);
 const [gridSpace0, gridSpace1, gridSpace2,
        gridSpace3, gridSpace4, gridSpace5,
        gridSpace6,gridSpace7,gridSpace8] = gridSpacesArray;
+    
+const impossibleModeBtn = document.querySelector('.slider');
+const grid = document.querySelector('.grid');
+const mainHeader = document.querySelector('.main-header');
+
 
 let isGameOver = false;
 
@@ -247,6 +252,116 @@ const computer = (function () {
 })()
 
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////// Minimax Computer //////////////////////////////////////////////////////
+
+const superComputer = (function(){
+    const checkedLines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+
+    const isWinningState = function(gameBoard) {         //determines whether a given board state is a win/loss/tie
+        for (const line of checkedLines){
+            let total = 0;
+            for(const index of line){
+                total += gameBoard[index];
+                if(total === 3) {
+                    return "humanWin";
+                }
+                if(total === -3) {
+                    return "computerWin";
+                }
+            }
+        }
+        return false;
+    }
+
+    const computeValue = function(gameBoard) {
+        const checkedLines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+        for (const line of checkedLines){
+            let total = 0;
+            for(const index of line){
+                total += gameBoard[index];
+                if(total === 3) {
+                    return 100;
+                }
+                if(total === -3) {
+                    return -100;
+                }
+            }
+        }
+        if(!gameBoard.includes(0)) return 0;
+    }
+
+
+    const minimax = function(newBoard, maximizingPlayer){
+        const availableSpots = [];
+        for (let i=0; i<newBoard.length; i++){
+            if(newBoard[i] === 0) availableSpots.push(i);
+        }
+
+        if(isWinningState(newBoard) === "humanWin"){
+            return {score:10};
+        } else if(isWinningState(newBoard) === "computerWin"){
+            return {score:-10};
+        } else if (!newBoard.includes(0)){
+            return {score: 0};
+        }
+
+        let moves = [];
+
+         // loop through available spots
+        for (let i = 0; i < availableSpots.length; i++){
+        //create an object for each and store the index of that spot 
+            let move = {};
+            move.index = availableSpots[i];
+        
+            if(maximizingPlayer){
+                newBoard[availableSpots[i]] = 1;
+                let result = minimax(newBoard, !maximizingPlayer);
+                move.score = result.score;
+            } else {
+                newBoard[availableSpots[i]] = -1;
+                let result = minimax(newBoard, !maximizingPlayer);
+                move.score = result.score;
+            }
+
+            newBoard[availableSpots[i]] = 0;
+            moves.push(move);
+        }
+
+        let bestMove;
+        if(maximizingPlayer){
+            let bestScore = -10000;
+            for(let i=0; i<moves.length;i++){
+                if(moves[i].score > bestScore){
+                    bestScore = moves[i].score;
+                    bestMove = i;
+                }
+            }
+        } else {
+            let bestScore = 10000;
+            for(let i=0; i<moves.length;i++){
+                if(moves[i].score < bestScore){
+                    bestScore = moves[i].score;
+                    bestMove = i;
+                }
+            }
+        }
+
+        return moves[bestMove];
+    }
+
+    const makeMove = function() {
+        const index = minimax(gameBoard.getGameboard(), false).index;
+        gameBoard.updateGameboard(index);
+    }
+        
+
+    return{
+        minimax,
+        makeMove
+    }
+})()
 
 
 
@@ -271,33 +386,54 @@ gridSpaces.forEach(gridSpace => {
                 div.classList.add('msg-win')
                 div.classList.add('delete-me')
                 div.append(`${winner} Wins!`);
-                body.append(div);
+                mainHeader.append(div);
                 return;
             } else if (isGameOver === true) {
                 const div = document.createElement('div');
                 div.classList.add('msg-tie')
                 div.classList.add('delete-me')
                 div.append('It\'s a tie!');
-                body.append(div);
+                mainHeader.append(div);
             }
 
-            if(!isGameOver){
-                computer.makeMove(parseInt(gridSpaceIndexNumber));              // computer makes move
-                
-                winner = gameController.checkWinner(computer.getLastPlayedComputerPosition());
-                if (winner) {
-                    const div = document.createElement('div');
-                    div.classList.add('msg-win')
-                    div.classList.add('delete-me')
-                    div.append(`${winner} Wins!`);
-                    body.append(div);
-                    return;
-                } else if (isGameOver === true) {
-                    const div = document.createElement('div');
-                    div.classList.add('msg-tie')
-                    div.classList.add('delete-me')
-                    div.append('It\'s a tie!');
-                    body.append(div);
+
+            if(!impossibleMode){
+                if(!isGameOver){
+                    computer.makeMove(parseInt(gridSpaceIndexNumber));              // computer makes move
+                    
+                    winner = gameController.checkWinner(computer.getLastPlayedComputerPosition());
+                    if (winner) {
+                        const div = document.createElement('div');
+                        div.classList.add('msg-win');
+                        div.classList.add('delete-me');
+                        div.append(`${winner} Wins!`);
+                        mainHeader.append(div);
+                    } else if (isGameOver === true) {
+                        const div = document.createElement('div');
+                        div.classList.add('msg-win');
+                        div.classList.add('delete-me');
+                        div.append('It\'s a tie!');
+                        mainHeader.append(div);
+                    }
+                }
+            } else {
+                if(!isGameOver){
+                    superComputer.makeMove();              // superComputer makes move
+                    
+                    winner = gameController.checkWinner(computer.getLastPlayedComputerPosition());
+                    if (winner) {
+                        const div = document.createElement('div');
+                        div.classList.add('msg-win');
+                        div.classList.add('delete-me');
+                        div.append(`${winner} Wins!`);
+                        mainHeader.append(div);
+                    } else if (isGameOver === true) {
+                        const div = document.createElement('div');
+                        div.classList.add('msg-tie');
+                        div.classList.add('delete-me');
+                        div.append('It\'s a tie!');
+                        mainHeader.append(div);
+                    }
                 }
             }
         }
@@ -306,9 +442,15 @@ gridSpaces.forEach(gridSpace => {
 
 resetBtn.onclick = (e) => {
     gameBoard.createNewGameboard();
-    // if(document.contains(document.querySelector('.delete-me'))){
+    if(document.contains(document.querySelector('.delete-me'))){
         document.querySelector('.delete-me').remove();
-    // }  
+    }  
+}
+
+let impossibleMode = false;
+
+impossibleModeBtn.onclick = () => {
+    impossibleMode = !impossibleMode;
 }
 
 
