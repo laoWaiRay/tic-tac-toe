@@ -14,6 +14,9 @@ body {
   background-color: #151515;
   color: white;
   font-family: "Fredoka One", sans-serif;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .main {
@@ -186,17 +189,19 @@ button:hover {
 .msg-win {
   color: green;
   position: absolute;
-  top: 44px;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 4.5rem;
+  z-index: 10;
+  width: 100%;
+  text-align: center;
 }
 
 .msg-tie {
+  color: orange;
   position: absolute;
-  color: rgb(210, 136, 0);
-  top: 44px;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 4.5rem;
+  z-index: 10;
+  width: 100%;
+  text-align: center;
 }
 
 .main-header {
