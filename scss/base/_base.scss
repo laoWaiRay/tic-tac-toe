@@ -14,6 +14,9 @@ body{
     background-color: #151515;
     color: white;
     font-family: 'Fredoka One', sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 .main{
